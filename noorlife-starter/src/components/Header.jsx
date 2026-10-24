@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 
 export function Header({
+  user,
   activeTab,
   setActiveTab,
   searchQuery,
@@ -186,11 +187,11 @@ export function Header({
             onClick={() => setShowUserDropdown(!showUserDropdown)}
           >
             <div className="user-avatar">
-              <span>A</span>
+              <span>{user?.avatarLetter || user?.name?.[0] || "N"}</span>
             </div>
             <div className="user-greeting-box">
               <span className="user-greeting">Assalamu Alaikum,</span>
-              <strong className="user-name">Ayesha</strong>
+              <strong className="user-name">{user?.displayName || "Nayab"}</strong>
             </div>
             <ChevronDown size={14} color="var(--text-muted)" />
           </div>
@@ -198,11 +199,11 @@ export function Header({
           {showUserDropdown && (
             <div
               className="search-dropdown-results"
-              style={{ width: "220px", right: 0, left: "auto", top: "48px" }}
+              style={{ width: "230px", right: 0, left: "auto", top: "48px" }}
             >
               <div style={{ padding: "12px 14px", borderBottom: "1px solid var(--border-color)" }}>
-                <div style={{ fontWeight: "700", fontSize: "13px" }}>Ayesha Khan</div>
-                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>ayesha.home@noorlife.app</div>
+                <div style={{ fontWeight: "700", fontSize: "13px" }}>{user?.name || "Md Nayab Alam"}</div>
+                <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>{user?.email || "alamnayab718@gmail.com"}</div>
               </div>
               <button
                 className="search-result-item"
@@ -224,7 +225,7 @@ export function Header({
                 style={{ color: "#e63946" }}
                 onClick={() => {
                   setShowUserDropdown(false);
-                  alert("Logged out of NoorLife. Signing in as guest demo user.");
+                  alert("Logged out of NoorLife.");
                 }}
               >
                 <LogOut size={15} />

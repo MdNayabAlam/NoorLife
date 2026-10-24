@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { User, Bell, MapPin, Moon, Shield, Save, Check } from "lucide-react";
 
-export function SettingsPage({ theme, setTheme, showToast }) {
-  const [userName, setUserName] = useState("Ayesha Khan");
-  const [email, setEmail] = useState("ayesha.khan@noorlife.app");
+export function SettingsPage({ user, onUpdateUser, theme, setTheme, showToast }) {
+  const [userName, setUserName] = useState(user?.name || "Md Nayab Alam");
+  const [email, setEmail] = useState(user?.email || "alamnayab718@gmail.com");
   const [city, setCity] = useState("New Delhi, India");
   const [method, setMethod] = useState("Karachi (Hanafi)");
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -12,6 +12,16 @@ export function SettingsPage({ theme, setTheme, showToast }) {
   function handleSave(e) {
     e.preventDefault();
     setSaved(true);
+    if (onUpdateUser) {
+      const parts = userName.trim().split(" ");
+      const displayName = parts.length > 2 ? parts[1] : parts[0] || "Nayab";
+      onUpdateUser({
+        name: userName.trim(),
+        displayName: displayName,
+        email: email.trim(),
+        avatarLetter: "N"
+      });
+    }
     if (showToast) showToast("Settings updated successfully! ✅");
     setTimeout(() => setSaved(false), 2500);
   }

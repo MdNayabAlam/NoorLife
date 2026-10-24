@@ -51,7 +51,16 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem("noorlife_theme") || "light");
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [toastMessage, setToastMessage] = useState("");
+  // User Profile
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("noorlife_user");
+    return saved ? JSON.parse(saved) : {
+      name: "Md Nayab Alam",
+      displayName: "Nayab",
+      email: "alamnayab718@gmail.com",
+      avatarLetter: "N"
+    };
+  });
 
   // Core Data States (persistent with fallback)
   const [tasks, setTasks] = useState(() => {
@@ -86,7 +95,11 @@ function App() {
     localStorage.setItem("noorlife_theme", theme);
   }, [theme]);
 
-  // Persist tasks & groceries
+  // Persist user, tasks & groceries
+  useEffect(() => {
+    localStorage.setItem("noorlife_user", JSON.stringify(user));
+  }, [user]);
+
   useEffect(() => {
     localStorage.setItem("noorlife_tasks", JSON.stringify(tasks));
   }, [tasks]);
@@ -183,6 +196,7 @@ function App() {
       <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
         {/* Top Header */}
         <Header
+          user={user}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           searchQuery={searchQuery}
@@ -209,6 +223,7 @@ function App() {
             {/* View Switcher: Dashboard or Dedicated Module Page */}
             {activeTab === "Dashboard" && (
               <DashboardPage
+                user={user}
                 tasks={tasks}
                 toggleTask={toggleTask}
                 onAddTaskClick={() => setIsAddTaskOpen(true)}
@@ -299,7 +314,13 @@ function App() {
             )}
 
             {activeTab === "Settings" && (
-              <SettingsPage theme={theme} setTheme={setTheme} showToast={showToast} />
+              <SettingsPage
+                user={user}
+                onUpdateUser={setUser}
+                theme={theme}
+                setTheme={setTheme}
+                showToast={showToast}
+              />
             )}
 
             {/* Right Panel Widgets (always available on Dashboard, or responsive) */}

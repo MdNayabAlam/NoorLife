@@ -11,6 +11,7 @@ import { ProgressRingCard } from "../components/ProgressRingCard";
 import { RewardsCard } from "../components/RewardsCard";
 
 export function DashboardPage({
+  user,
   tasks,
   toggleTask,
   onAddTaskClick,
@@ -39,7 +40,7 @@ export function DashboardPage({
   return (
     <div className="center-content-area">
       {/* Hero Banner with Mosque Photo Blend */}
-      <HeroBanner userName="Ayesha" />
+      <HeroBanner userName={user?.displayName || "Nayab"} />
 
       {/* Quick Action Pills Row */}
       <QuickActions onSelectModule={onSelectModule} />

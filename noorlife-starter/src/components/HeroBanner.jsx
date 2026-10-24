@@ -1,7 +1,7 @@
 import React from "react";
 import { Calendar, Quote } from "lucide-react";
 
-export function HeroBanner({ userName = "Ayesha" }) {
+export function HeroBanner({ userName = "Nayab" }) {
   // Format current/display date matching reference
   const dayName = "Thursday";
   const gregorianDate = "15 May 2025";
