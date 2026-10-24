@@ -51,6 +51,7 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem("noorlife_theme") || "light");
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
   // User Profile
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("noorlife_user");
