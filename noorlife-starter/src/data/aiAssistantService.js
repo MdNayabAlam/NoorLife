@@ -1,11 +1,22 @@
+import { askServerAssistantAPI } from "../services/api";
+
 // NoorLife AI Assistant intelligent response generator
-// Works seamlessly offline with rich domain intelligence, and can connect to backend API
-
+// Works seamlessly with backend API, and falls back to rich domain intelligence offline
 export async function askNoorLifeAI(prompt) {
-  const normalized = prompt.toLowerCase().trim();
+  try {
+    const serverResult = await askServerAssistantAPI(prompt);
+    if (serverResult && serverResult.reply) {
+      return {
+        text: serverResult.reply,
+        quickFollowUps: serverResult.suggestions || ["Aaj ke ghar ke kaam ka plan banao", "₹500 mein grocery list banao", "Mujhe 10 GK questions do"]
+      };
+    }
+  } catch (err) {
+    // Graceful offline fallback
+  }
 
-  // Simulate slight thinking latency for realistic AI feel
-  await new Promise(resolve => setTimeout(resolve, 600));
+  const normalized = prompt.toLowerCase().trim();
+  await new Promise(resolve => setTimeout(resolve, 400));
 
   if (normalized.includes("ghar ke kaam") || normalized.includes("kaam ka plan") || normalized.includes("clean") || normalized.includes("home tasks")) {
     return {

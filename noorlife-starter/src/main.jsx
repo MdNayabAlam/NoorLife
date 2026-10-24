@@ -34,7 +34,6 @@ import { RewardsPage } from "./pages/RewardsPage";
 import { AIAssistantPage } from "./pages/AIAssistantPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
-// Initial datasets
 import {
   initialTasks,
   initialGroceries,
@@ -44,6 +43,22 @@ import {
   dailyDuasData,
 } from "./data/initialData";
 import { defaultQuranProgress } from "./data/quranData";
+
+// Backend API services
+import {
+  fetchTasksAPI,
+  createTaskAPI,
+  updateTaskAPI,
+  deleteTaskAPI,
+  fetchGroceriesAPI,
+  createGroceryAPI,
+  updateGroceryAPI,
+  deleteGroceryAPI,
+  fetchEventsAPI,
+  createEventAPI,
+  deleteEventAPI,
+  fetchCurrentUserAPI,
+} from "./services/api";
 
 function App() {
   // Navigation & Theme
@@ -109,6 +124,27 @@ function App() {
     localStorage.setItem("noorlife_groceries", JSON.stringify(groceries));
   }, [groceries]);
 
+  // Sync with backend API on mount
+  useEffect(() => {
+    fetchTasksAPI()
+      .then((data) => {
+        if (data && data.length > 0) setTasks(data);
+      })
+      .catch(() => {});
+
+    fetchGroceriesAPI()
+      .then((data) => {
+        if (data && data.length > 0) setGroceries(data);
+      })
+      .catch(() => {});
+
+    fetchEventsAPI()
+      .then((data) => {
+        if (data && data.length > 0) setCalendarEvents(data);
+      })
+      .catch(() => {});
+  }, []);
+
   // Toast trigger helper
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -119,36 +155,50 @@ function App() {
 
   // Task actions
   const toggleTask = (id) => {
+    const current = tasks.find((t) => t.id === id);
+    const updatedDone = current ? !current.done : false;
+
     setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
+      prev.map((t) => (t.id === id ? { ...t, done: updatedDone } : t))
     );
+
+    updateTaskAPI(id, { done: updatedDone }).catch(() => {});
   };
 
   const handleAddTask = (newTask) => {
     setTasks((prev) => [newTask, ...prev]);
     showToast(`Task added: "${newTask.title}"`);
+    createTaskAPI(newTask).catch(() => {});
   };
 
   const handleDeleteTask = (id) => {
     setTasks((prev) => prev.filter((t) => t.id !== id));
     showToast("Task removed");
+    deleteTaskAPI(id).catch(() => {});
   };
 
   // Grocery actions
   const toggleGrocery = (id) => {
+    const current = groceries.find((g) => g.id === id);
+    const updatedDone = current ? !current.done : false;
+
     setGroceries((prev) =>
-      prev.map((g) => (g.id === id ? { ...g, done: !g.done } : g))
+      prev.map((g) => (g.id === id ? { ...g, done: updatedDone } : g))
     );
+
+    updateGroceryAPI(id, { done: updatedDone }).catch(() => {});
   };
 
   const handleAddGrocery = (newItem) => {
     setGroceries((prev) => [...prev, newItem]);
     showToast(`Added to grocery: "${newItem.name}"`);
+    createGroceryAPI(newItem).catch(() => {});
   };
 
   const handleDeleteGrocery = (id) => {
     setGroceries((prev) => prev.filter((g) => g.id !== id));
     showToast("Item deleted from groceries");
+    deleteGroceryAPI(id).catch(() => {});
   };
 
   // Namaz step toggle
@@ -162,11 +212,13 @@ function App() {
   const handleAddEvent = (newEvent) => {
     setCalendarEvents((prev) => [...prev, newEvent]);
     showToast(`Event scheduled: "${newEvent.title}"`);
+    createEventAPI(newEvent).catch(() => {});
   };
 
   const handleDeleteEvent = (id) => {
     setCalendarEvents((prev) => prev.filter((e) => e.id !== id));
     showToast("Event removed from calendar");
+    deleteEventAPI(id).catch(() => {});
   };
 
   // Quiz launcher
