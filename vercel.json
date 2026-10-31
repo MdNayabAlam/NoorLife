@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd noorlife-starter && npm install && npm run build",
+  "outputDirectory": "noorlife-starter/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
