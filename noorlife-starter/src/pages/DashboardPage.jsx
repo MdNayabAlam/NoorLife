@@ -9,9 +9,11 @@ import { GroceryListCard } from "../components/GroceryListCard";
 import { FamilyCalendarCard } from "../components/FamilyCalendarCard";
 import { ProgressRingCard } from "../components/ProgressRingCard";
 import { RewardsCard } from "../components/RewardsCard";
+import { NaatSharifCard } from "../components/NaatSharifCard";
 
 export function DashboardPage({
   user,
+  theme,
   tasks,
   toggleTask,
   onAddTaskClick,
@@ -30,6 +32,7 @@ export function DashboardPage({
   quranProgress,
   onSelectModule,
   onViewRewards,
+  prayerData,
 }) {
   const completedTasks = tasks.filter((t) => t.done).length;
   const taskPercent = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
@@ -39,14 +42,18 @@ export function DashboardPage({
 
   return (
     <div className="center-content-area">
-      {/* Hero Banner with Mosque Photo Blend */}
-      <HeroBanner userName={user?.displayName || "Nayab"} />
+      {/* Hero Banner with Mosque Photo Blend & Day/Night Theme */}
+      <HeroBanner
+        userName={user?.displayName || "Nayab"}
+        theme={theme}
+        hijriDateProp={prayerData?.hijriDate}
+      />
 
-      {/* Quick Action Pills Row */}
+      {/* Quick Action Pills Row (5 items) */}
       <QuickActions onSelectModule={onSelectModule} />
 
-      {/* Central 6-Card Grid */}
-      <div className="cards-grid-2col">
+      {/* Central 3-Card Grid Row 1: Tasks, GK Quiz, Learn Namaz */}
+      <div className="cards-grid-3col">
         <TodayTasksCard
           tasks={tasks}
           toggleTask={toggleTask}
@@ -60,7 +67,10 @@ export function DashboardPage({
           toggleStep={toggleNamazStep}
           onContinueLearning={onContinueNamaz}
         />
+      </div>
 
+      {/* Central 3-Card Grid Row 2: Meal Plan, Grocery List, Family Calendar */}
+      <div className="cards-grid-3col">
         <MealPlanCard
           weeklyMeals={weeklyMeals}
           onViewRecipe={onViewRecipe}
@@ -76,7 +86,13 @@ export function DashboardPage({
         <FamilyCalendarCard
           events={calendarEvents}
           onViewAllCalendar={onViewAllCalendar}
+          onViewAllIslamicCalendar={() => onSelectModule("Islamic Calendar")}
         />
+      </div>
+
+      {/* Featured Naat Sharif Roohani Player Card */}
+      <div style={{ marginTop: "16px" }}>
+        <NaatSharifCard onNavigateNaat={() => onSelectModule("Naat Sharif")} />
       </div>
 
       {/* Bottom Row: Your Progress (4 circular rings) & Rewards & Streaks */}

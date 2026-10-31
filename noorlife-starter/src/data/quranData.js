@@ -19,16 +19,16 @@ export const surahsList = [
 ];
 
 export const defaultQuranProgress = {
-  currentSurah: "Surah Al-Baqarah",
-  surahNumber: 2,
-  currentPage: 45,
-  totalPages: 286,
-  dailyGoalPages: 10,
-  targetDays: 30,
+  currentSurah: "Para 1: Alif-Lam-Meem (الم)",
+  currentParaNumber: 1,
+  currentPage: 21,
+  totalPages: 604,
+  dailyGoalPages: 4,
+  targetDays: 150,
   lastReadDate: "Today at 07:15 AM",
   readingHistory: [
-    { date: "15 May 2025", pagesRead: 6, surah: "Al-Baqarah (Ayah 142 - 176)" },
-    { date: "14 May 2025", pagesRead: 8, surah: "Al-Baqarah (Ayah 90 - 141)" },
-    { date: "13 May 2025", pagesRead: 5, surah: "Al-Baqarah (Ayah 50 - 89)" },
+    { date: "Today", pagesRead: 4, surah: "Para 1: Alif-Lam-Meem (الم)", notes: "Ayah 1-30 with Hinglish Pronunciation" },
+    { date: "Yesterday", pagesRead: 5, surah: "Para 1: Alif-Lam-Meem (الم)", notes: "Surah Al-Fatihah & Al-Baqarah start" },
   ]
 };
+

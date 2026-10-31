@@ -1,12 +1,12 @@
 import React from "react";
 import {
-  Home,
-  ShoppingCart,
-  Brain,
-  BookOpen,
-  Clock,
-  Sparkles
-} from "lucide-react";
+  Icon3DHomeTasks,
+  Icon3DGroceryMeals,
+  Icon3DGKQuiz,
+  Icon3DNamazGuide,
+  Icon3DDailyDeen,
+  Icon3DNaatSharif
+} from "./Sidebar3DIcons";
 
 export function QuickActions({ onSelectModule }) {
   const actions = [
@@ -14,62 +14,62 @@ export function QuickActions({ onSelectModule }) {
       id: "Home Tasks",
       title: "Home Tasks",
       desc: "Manage daily work",
-      icon: Home,
-      colorClass: "bg-mint",
+      icon: Icon3DHomeTasks,
+      themeClass: "quick-action-tasks active-pill",
     },
     {
       id: "Grocery & Meals",
       title: "Grocery & Meals",
       desc: "Plan & shop smart",
-      icon: ShoppingCart,
-      colorClass: "bg-peach",
+      icon: Icon3DGroceryMeals,
+      themeClass: "quick-action-grocery",
     },
     {
       id: "GK Quiz",
       title: "GK Quiz",
       desc: "Test your knowledge",
-      icon: Brain,
-      colorClass: "bg-purple",
+      icon: Icon3DGKQuiz,
+      themeClass: "quick-action-quiz",
     },
     {
       id: "Namaz Guide",
       title: "Namaz Guide",
-      desc: "Learn step-by-step",
-      icon: BookOpen,
-      colorClass: "bg-emerald",
-    },
-    {
-      id: "Prayer Times",
-      title: "Prayer Times",
-      desc: "Never miss a prayer",
-      icon: Clock,
-      colorClass: "bg-sage",
+      desc: "Step-by-step learning",
+      icon: Icon3DNamazGuide,
+      themeClass: "quick-action-namaz",
     },
     {
       id: "Daily Deen",
       title: "Daily Deen",
-      desc: "Duas & Articles",
-      icon: Sparkles,
-      colorClass: "bg-teal",
+      desc: "Duas, Articles & More",
+      icon: Icon3DDailyDeen,
+      themeClass: "quick-action-deen",
+    },
+    {
+      id: "Naat Sharif",
+      title: "Naat Sharif",
+      desc: "14 Kalaam & Audio",
+      icon: Icon3DNaatSharif,
+      themeClass: "quick-action-naat",
     },
   ];
 
   return (
     <div className="quick-actions-row">
-      {actions.map((item) => {
-        const Icon = item.icon;
+      {actions.map((act) => {
+        const Icon = act.icon;
         return (
           <div
-            key={item.id}
-            className="quick-action-card"
-            onClick={() => onSelectModule(item.id)}
+            key={act.id}
+            className={`quick-action-card ${act.themeClass}`}
+            onClick={() => onSelectModule(act.id)}
           >
-            <div className={`quick-action-icon ${item.colorClass}`}>
-              <Icon size={20} strokeWidth={2} />
+            <div className="quick-action-icon">
+              <Icon size={18} strokeWidth={2} />
             </div>
             <div className="quick-action-text">
-              <h4>{item.title}</h4>
-              <p>{item.desc}</p>
+              <h4>{act.title}</h4>
+              <p>{act.desc}</p>
             </div>
           </div>
         );

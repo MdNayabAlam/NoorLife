@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Sparkles, Mic, Send } from "lucide-react";
+import { Bot, Mic, Send, Sparkles } from "lucide-react";
 
 export function AIAssistantWidget({ onPromptSelect, onSendMessage }) {
   const [inputVal, setInputVal] = useState("");
 
   const suggestions = [
-    "Aaj ke ghar ke kaam ka plan banao",
-    "₹500 mein grocery list banao",
+    "Aaj ke ghar ke kaam ka plan...",
+    "$500 mein grocery list banayein",
     "Mujhe 10 GK questions do",
   ];
 
@@ -29,60 +29,85 @@ export function AIAssistantWidget({ onPromptSelect, onSendMessage }) {
       };
       recognition.start();
     } else {
-      alert("Voice input simulated: Ask anything in Hindi, Urdu, or English!");
+      onSendMessage("Aaj ke ghar ke kaam ka schedule banayein");
     }
   }
 
   return (
-    <div className="ai-widget">
-      <div className="ai-header-tag">
-        <div className="ai-sparkle-icon">
-          <Sparkles size={16} />
+    <div className="ai-widget ai-widget-exact">
+      {/* Header Tag with Cute Robot Head Badge */}
+      <div className="ai-header-tag-exact">
+        <div className="ai-robot-badge-pill">
+          {/* Glowing cyan robot head */}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="6" width="18" height="14" rx="7" fill="#0d4734" stroke="#22d3ee" strokeWidth="1.5" />
+            <circle cx="8.5" cy="12.5" r="1.8" fill="#22d3ee" />
+            <circle cx="15.5" cy="12.5" r="1.8" fill="#22d3ee" />
+            <path d="M10.5 15.5 Q12 17 13.5 15.5" stroke="#22d3ee" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="12" y1="2" x2="12" y2="6" stroke="#22d3ee" strokeWidth="1.5" />
+            <circle cx="12" cy="2" r="1.2" fill="#22d3ee" />
+          </svg>
         </div>
-        <span>AI Assistant</span>
+        <div className="ai-header-titles">
+          <span className="ai-title-exact">AI Assistant</span>
+        </div>
       </div>
 
-      <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>
-        Try these:
+      <p className="ai-subtext-exact">Ask anything about Deen, task...</p>
+
+      {/* Main Body: 3 Speech Bubbles on Left, 3D Robot on Right */}
+      <div className="ai-widget-body-exact">
+        <div className="ai-prompt-bubbles-col-exact">
+          {suggestions.map((prompt, idx) => (
+            <button
+              key={idx}
+              className="ai-speech-bubble-chip-exact"
+              onClick={() => onPromptSelect(prompt)}
+            >
+              "{prompt}"
+            </button>
+          ))}
+        </div>
+
+        {/* 3D Floating Robot with Ambient Thruster Glow */}
+        <div className="ai-robot-container-exact">
+          <img
+            src="/images/ai_robot_avatar.png"
+            alt="NoorLife 3D Friendly AI Robot"
+            className="ai-robot-floating-img-exact"
+          />
+        </div>
       </div>
 
-      <div className="ai-try-prompts">
-        {suggestions.map((prompt, idx) => (
-          <button
-            key={idx}
-            className="ai-prompt-chip"
-            onClick={() => onPromptSelect(prompt)}
-          >
-            "{prompt}"
-          </button>
-        ))}
-      </div>
+      {/* Subtle diamond flare in center */}
+      <div className="ai-center-star-flare">✦</div>
 
-      <form className="ai-chat-input-bar" onSubmit={handleSubmit}>
+      {/* Bottom Chat Bar */}
+      <form className="ai-chat-input-bar-exact" onSubmit={handleSubmit}>
         <button
           type="button"
           onClick={handleVoiceInput}
-          title="Voice input (Microphone)"
+          className="ai-mic-btn-exact"
+          title="Voice input"
           aria-label="Voice input"
-          style={{ color: "var(--text-muted)", display: "flex", alignItems: "center" }}
         >
-          <Mic size={15} />
+          <Mic size={14} color="#0d3d2c" />
         </button>
 
         <input
           type="text"
-          placeholder="Ask NoorLife AI anything..."
+          placeholder="Type your question..."
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
         />
 
         <button
           type="submit"
-          className="ai-send-btn"
-          title="Send question"
-          aria-label="Send question"
+          className="ai-send-btn-exact"
+          title="Send"
+          aria-label="Send"
         >
-          <Send size={13} />
+          <Send size={11} color="#ffffff" />
         </button>
       </form>
     </div>

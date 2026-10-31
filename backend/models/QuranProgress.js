@@ -28,6 +28,18 @@ const quranProgressSchema = new mongoose.Schema(
       type: Number,
       default: 10,
     },
+    notes: {
+      type: String,
+      default: "",
+    },
+    readingHistory: [
+      {
+        date: String,
+        pagesRead: Number,
+        surah: String,
+        notes: String,
+      },
+    ],
   },
   { timestamps: true }
 );

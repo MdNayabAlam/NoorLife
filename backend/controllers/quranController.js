@@ -7,6 +7,12 @@ let memoryQuran = {
   currentPage: 45,
   totalPages: 286,
   dailyGoalPages: 10,
+  notes: "Reflecting on Ayatul Kursi (2:255) daily",
+  readingHistory: [
+    { date: "15 May", pagesRead: 5, surah: "Surah Al-Baqarah", notes: "Completed Ruku 5" },
+    { date: "14 May", pagesRead: 6, surah: "Surah Al-Baqarah", notes: "Reviewed verses on patience" },
+    { date: "13 May", pagesRead: 5, surah: "Surah Al-Baqarah", notes: "Morning Tilawat" }
+  ]
 };
 
 exports.getQuranProgress = async (req, res) => {

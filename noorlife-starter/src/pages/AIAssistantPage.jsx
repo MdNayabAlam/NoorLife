@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Sparkles, Send, Mic, Bot, User, Trash2 } from "lucide-react";
+import { Sparkles, Send, Mic, Bot, User, Trash2, ShieldCheck, Check } from "lucide-react";
+import { askServerAssistantAPI } from "../services/api";
 import { askNoorLifeAI } from "../data/aiAssistantService";
 
 export function AIAssistantPage({ showToast }) {
@@ -40,12 +41,32 @@ export function AIAssistantPage({ showToast }) {
     setLoading(true);
 
     try {
-      const response = await askNoorLifeAI(textToSend);
+      // First attempt server-side proxy
+      let replyText = "";
+      let followUps = [];
+
+      try {
+        const serverData = await askServerAssistantAPI(textToSend);
+        if (serverData && serverData.reply) {
+          replyText = serverData.reply;
+          followUps = serverData.suggestions || [];
+        }
+      } catch (serverErr) {
+        // Fallback to intelligent local model
+        const fallbackRes = await askNoorLifeAI(textToSend);
+        replyText = fallbackRes.text;
+        followUps = fallbackRes.quickFollowUps || [];
+      }
+
       const aiMsg = {
         id: Date.now() + 1,
         sender: "ai",
-        text: response.text,
-        quickFollowUps: response.quickFollowUps,
+        text: replyText || "Assalamu Alaikum! NoorLife AI assistant aapki har roze ki zarooraton mein madad ke liye yahan hai.",
+        quickFollowUps: followUps.length > 0 ? followUps : [
+          "Aaj ke ghar ke kaam ka plan banao",
+          "₹500 mein grocery list banao",
+          "Halal lunch recipe batao"
+        ],
         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       };
       setMessages((prev) => [...prev, aiMsg]);
@@ -75,7 +96,7 @@ export function AIAssistantPage({ showToast }) {
       };
       recognition.start();
     } else {
-      if (showToast) showToast("Voice recognition simulated");
+      if (showToast) showToast("Voice input simulated (listening...)");
     }
   }
 
@@ -84,7 +105,27 @@ export function AIAssistantPage({ showToast }) {
       <div className="page-view-header">
         <div>
           <h2>NoorLife AI Assistant</h2>
-          <p>Your intelligent, faith-inspired companion for domestic harmony and learning.</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "2px" }}>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+              Faith-inspired domestic harmony, meal planning, and Islamic knowledge.
+            </span>
+            <span
+              className="search-badge"
+              style={{
+                background: "#ecfdf5",
+                color: "#047857",
+                border: "1px solid #a7f3d0",
+                fontSize: "10.5px",
+                padding: "2px 8px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#10b981" }} />
+              Demo Mode (Server Integration Active)
+            </span>
+          </div>
         </div>
         <button
           className="action-icon-btn"
@@ -120,7 +161,7 @@ export function AIAssistantPage({ showToast }) {
                 style={{
                   display: "flex",
                   gap: "12px",
-                  maxWidth: "80%",
+                  maxWidth: "85%",
                   flexDirection: m.sender === "user" ? "row-reverse" : "row",
                 }}
               >
@@ -142,91 +183,97 @@ export function AIAssistantPage({ showToast }) {
 
                 <div
                   style={{
-                    padding: "14px 18px",
-                    borderRadius: "var(--radius-lg)",
                     background: m.sender === "user" ? "var(--primary-green)" : "var(--bg-subtle)",
-                    color: m.sender === "user" ? "#ffffff" : "var(--text-main)",
-                    fontSize: "13px",
-                    lineHeight: "1.6",
-                    whiteSpace: "pre-wrap",
+                    color: m.sender === "user" ? "#ffffff" : "var(--text-heading)",
+                    padding: "12px 16px",
+                    borderRadius: "var(--radius-lg)",
                     border: m.sender === "user" ? "none" : "1px solid var(--border-color)",
-                    boxShadow: "var(--shadow-sm)",
+                    fontSize: "13px",
+                    lineHeight: "1.55",
+                    whiteSpace: "pre-line",
                   }}
                 >
                   {m.text}
                 </div>
               </div>
 
-              {/* Quick follow-ups */}
+              {/* Quick suggestions pills */}
               {m.quickFollowUps && m.quickFollowUps.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "10px", marginLeft: "46px" }}>
-                  {m.quickFollowUps.map((q, idx) => (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px", marginLeft: "46px" }}>
+                  {m.quickFollowUps.map((promptText, idx) => (
                     <button
                       key={idx}
-                      className="ai-prompt-chip"
-                      onClick={() => handleSend(q)}
+                      className="search-badge"
+                      style={{
+                        background: "var(--bg-card)",
+                        border: "1px solid var(--border-color)",
+                        color: "var(--primary-green)",
+                        cursor: "pointer",
+                        padding: "5px 12px",
+                        fontSize: "11px",
+                        fontWeight: "600",
+                        transition: "all 0.15s ease",
+                      }}
+                      onClick={() => handleSend(promptText)}
                     >
-                      "{q}"
+                      {promptText}
                     </button>
                   ))}
                 </div>
               )}
-
-              <span style={{ fontSize: "10px", color: "var(--text-light)", marginTop: "4px", marginInline: "46px" }}>
-                {m.time}
-              </span>
             </div>
           ))}
 
           {loading && (
-            <div style={{ display: "flex", gap: "10px", alignItems: "center", marginLeft: "14px" }}>
-              <div className="ai-sparkle-icon" style={{ width: "26px", height: "26px" }}>
-                <Sparkles size={14} />
-              </div>
-              <span style={{ fontSize: "12px", color: "var(--text-muted)", fontStyle: "italic" }}>
-                NoorLife AI is crafting your personalized answer...
-              </span>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center", marginLeft: "46px", color: "var(--text-muted)", fontSize: "12px" }}>
+              <Sparkles size={14} className="pulse-animation" color="var(--primary-green)" />
+              <span>NoorLife AI soch raha hai...</span>
             </div>
           )}
 
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Bottom Input Form */}
-        <div style={{ padding: "16px 20px", borderTop: "1px solid var(--border-color)", background: "var(--bg-card)" }}>
+        {/* Input Bar */}
+        <div style={{ padding: "14px 18px", borderTop: "1px solid var(--border-color)", background: "var(--bg-card)" }}>
           <form
-            className="ai-chat-input-bar"
-            style={{ padding: "6px 8px 6px 16px" }}
             onSubmit={(e) => {
               e.preventDefault();
               handleSend(inputVal);
             }}
+            style={{ display: "flex", gap: "10px", alignItems: "center" }}
           >
             <button
               type="button"
+              className="action-icon-btn"
               onClick={handleVoiceInput}
-              aria-label="Voice input"
-              style={{ color: "var(--text-muted)", display: "flex", alignItems: "center" }}
+              title="Voice Input"
+              style={{ color: "var(--primary-green)" }}
             >
-              <Mic size={17} />
+              <Mic size={18} />
             </button>
 
             <input
               type="text"
-              placeholder="Ask anything... (e.g. '₹500 mein grocery list banao')"
+              className="form-input"
+              style={{ flex: 1, borderRadius: "var(--radius-pill)", padding: "10px 18px" }}
+              placeholder="Poochiye... jaise: '₹500 mein grocery plan' ya 'Bachon ki parvarish tips'..."
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              style={{ fontSize: "13px" }}
             />
 
             <button
               type="submit"
-              className="ai-send-btn"
-              style={{ width: "36px", height: "36px" }}
-              disabled={loading}
-              aria-label="Send message"
+              disabled={!inputVal.trim() || loading}
+              className="card-action-btn-green"
+              style={{
+                borderRadius: "var(--radius-pill)",
+                padding: "10px 20px",
+                opacity: inputVal.trim() && !loading ? 1 : 0.5,
+              }}
             >
               <Send size={15} />
+              <span>Send</span>
             </button>
           </form>
         </div>
